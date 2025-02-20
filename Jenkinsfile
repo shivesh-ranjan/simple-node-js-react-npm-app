@@ -50,7 +50,7 @@ pipeline {
     }
     post {
 	always {
-	    archiveArtifacts artifacts: '$HOME/result.json', onlyIfSuccessful: true
+	    archiveArtifacts artifacts: '/var/lib/jenkins/result.json', onlyIfSuccessful: true
 	}
     }
 }
