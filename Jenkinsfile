@@ -35,8 +35,8 @@ pipeline {
 			//   }
 		    steps {
 			script {
-			    sh 'touch /tmp/result.json'
-			    sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/result.json:/tmp/result.json aquasec/trivy repo --format cyclonedx --scanners vuln --output /tmp/result.json https://github.com/shivesh-ranjan/simple-node-js-react-npm-app.git'
+			    sh 'touch ${env.WORKSPACE}/result.json'
+			    sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -v ${env.WORKSPACE}/result.json:/tmp/result.json aquasec/trivy repo --format cyclonedx --scanners vuln --output /tmp/result.json https://github.com/shivesh-ranjan/simple-node-js-react-npm-app.git'
 			}
 		    }
 		}
@@ -50,7 +50,7 @@ pipeline {
     }
     post {
 	always {
-	    archiveArtifacts artifacts: '/tmp/result.json', onlyIfSuccessful: true
+	    archiveArtifacts artifacts: '${env.WORKSPACE}/result.json', onlyIfSuccessful: true
 	}
     }
 }
