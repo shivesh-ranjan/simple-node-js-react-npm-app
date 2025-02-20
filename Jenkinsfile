@@ -27,15 +27,15 @@ pipeline {
 	    	    }
 		}
 		stage('SCA and Secrets Scan') {
-		    agent {
-			docker {
-			    image 'aquasec/trivy'
-			    reuseNode true
-			}
-		    }
+			//   agent {
+			//docker {
+			//    image 'aquasec/trivy'
+			//    reuseNode true
+			//}
+			//   }
 		    steps {
 			script {
-			     sh 'trivy fs --format cyclonedx --scanners vuln --output result.json .'
+			     sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -v result.json:result.json aquasec/trivy repo --format cyclonedx --scanners vuln --output result.json https://github.com/shivesh-ranjan/simple-node-js-react-npm-app.git'
 			}
 		    }
 		}
