@@ -35,9 +35,9 @@ pipeline {
 			//   }
 		    steps {
 			script {
-			    sh 'pwd'
-			    sh 'touch $HOME/result.json'
-			    sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/result.json:$HOME/result.json aquasec/trivy repo --format cyclonedx --scanners vuln --output $HOME/result.json https://github.com/shivesh-ranjan/simple-node-js-react-npm-app.git'
+			    // sh 'pwd' >>> /var/lib/jenkins/workspace/simple-node-js/
+			    sh 'touch result.json'
+			    sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/jenkins/workspace/simple-node-js/result.json:$HOME/result.json aquasec/trivy repo --format cyclonedx --scanners vuln --output $HOME/result.json https://github.com/shivesh-ranjan/simple-node-js-react-npm-app.git'
 			}
 		    }
 		}
@@ -51,7 +51,7 @@ pipeline {
     }
     post {
 	always {
-	    archiveArtifacts artifacts: '/var/lib/jenkins/result.json', onlyIfSuccessful: true
+	    archiveArtifacts artifacts: 'result.json', onlyIfSuccessful: true
 	}
     }
 }
