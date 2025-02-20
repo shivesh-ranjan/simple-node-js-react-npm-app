@@ -35,7 +35,7 @@ pipeline {
 			//   }
 		    steps {
 			script {
-			     sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -v result.json:result.json aquasec/trivy repo --format cyclonedx --scanners vuln --output result.json https://github.com/shivesh-ranjan/simple-node-js-react-npm-app.git'
+			     sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock -v ./result.json:./result.json aquasec/trivy repo --format cyclonedx --scanners vuln --output result.json https://github.com/shivesh-ranjan/simple-node-js-react-npm-app.git'
 			}
 		    }
 		}
