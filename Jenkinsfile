@@ -47,7 +47,7 @@ pipeline {
 	    steps {
 		script {
 		    sh 'touch imgResult.json'
-		    sh 'docker run --name trivy -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/jenkins/workspace/simple-node-js/imgResult.json:$HOME/result.json aquasec/trivy image --exit-code 1 --severity CRITICAL --format cyclonedx --scanners vuln --output $HOME/result.json derekshaw/simple-node-js:1.0'
+		    sh 'docker run --name trivy -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/jenkins/workspace/simple-node-js/imgResult.json:$HOME/result.json aquasec/trivy image --exit-code 1 --severity CRITICAL --format cyclonedx --scanners vuln --output $HOME/result.json derekshaw/simple-node-js:$GIT_COMMIT'
 		    sh 'docker stop trivy'
 		    sh 'docker rm trivy'
 	        }
