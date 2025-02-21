@@ -75,7 +75,6 @@ pipeline {
 		docker rm zap
 	    '''
 	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
-	    junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
             sh 'trivy convert --format template --template /usr/local/share/trivy/templates/html.tpl --output trivy-image-CRITICAL-results.html trivy-image-CRITICAL-results.json'
             sh 'trivy convert --format template --template /usr/local/share/trivy/templates/html.tpl --output trivy-sca-CRITICAL-results.html trivy-sca-CRITICAL-results.json'
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-CRITICAL-results.html", reportName: "Trivy Image Critical Vul Report", reportTitles: "", useWrapperFileDirectly: true])
