@@ -68,13 +68,6 @@ pipeline {
     }
     post {
 	always {
-	    sh '''
-		docker stop mynodeapp
-		docker rm mynodeapp
-		docker stop zap
-		docker rm zap
-	    '''
-	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
             sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-image-CRITICAL-results.html trivy-image-CRITICAL-results.json'
             sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-sca-CRITICAL-results.html trivy-sca-CRITICAL-results.json'
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-CRITICAL-results.html", reportName: "Trivy Image Critical Vul Report", reportTitles: "", useWrapperFileDirectly: true])
@@ -82,6 +75,13 @@ pipeline {
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
 	    archiveArtifacts artifacts: 'trivy-image-CRITICAL-results.json', onlyIfSuccessful: false
 	    archiveArtifacts artifacts: 'trivy-sca-CRITICAL-results.json', onlyIfSuccessful: false
+	    sh '''
+		docker stop mynodeapp
+		docker rm mynodeapp
+		docker stop zap
+		docker rm zap
+	    '''
+	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
 	}
     }
 }
