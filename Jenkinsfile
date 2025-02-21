@@ -58,7 +58,11 @@ pipeline {
 		script {
 		    sh 'docker run --name mynodeapp -d -p 3000:3000 derekshaw/simple-node-js:$GIT_COMMIT'
 		    sh 'docker pull zaproxy/zap-stable'
-		    sh 'docker run -v $(pwd):/zap/wrk/:rw --network="host" zaproxy/zap-stable zap-full-scan.py -t http://localhost:3000 -r scan-report.html'
+		    sh 'docker run --name zap -v /var/lib/jenkins/workspace/simple-node-js/zap-scan-report.html:$HOME/scan-report.html --network="host" zaproxy/zap-stable zap-full-scan.py -t http://localhost:3000 -r $HOME/scan-report.html'
+		    sh 'docker stop mynodeapp'
+		    sh 'docker stop zap'
+		    sh 'docker rm mynodeapp'
+		    sh 'docker rm zap'
 		}
 	    }
 	}
@@ -83,7 +87,7 @@ pipeline {
 	always {
 	    archiveArtifacts artifacts: 'result.json', onlyIfSuccessful: true
 	    archiveArtifacts artifacts: 'imgResult.json', onlyIfSuccessful: true
-	    archiveArtifacts artifacts: 'scan-report.html', onlyIfSuccessful: true
+	    archiveArtifacts artifacts: 'zap-scan-report.html', onlyIfSuccessful: true
 	}
     }
 }
