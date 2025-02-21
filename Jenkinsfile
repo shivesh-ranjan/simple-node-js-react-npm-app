@@ -54,7 +54,7 @@ pipeline {
 		script {
 		    sh 'docker run --name mynodeapp -d -p 3000:3000 derekshaw/simple-node-js:$GIT_COMMIT'
 		    sh 'docker pull zaproxy/zap-stable'
-		    sh 'docker run -u zap --name zap -v $(pwd)/zap:/zap/wrk:rw --network="host" zaproxy/zap-stable zap-full-scan.py -t http://localhost:3000 -r zap-scan-report.html'
+		    sh 'docker run -u root --name zap -v $(pwd)/zap:/zap/wrk:rw --network="host" zaproxy/zap-stable zap-full-scan.py -t http://localhost:3000 -r zap-scan-report.html'
 		}
 	    }
 	}
