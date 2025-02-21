@@ -29,8 +29,7 @@ pipeline {
 		stage('SCA and Secrets Scan') {
 		    steps {
 			script {
-			    sh 'touch result.json'
-			    sh 'docker run --name trivySCA -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/jenkins/workspace/simple-node-js/result.json:$HOME/result.json aquasec/trivy repo --exit-code 1 --severity CRITICAL --format cyclonedx --scanners vuln --output $HOME/result.json https://github.com/shivesh-ranjan/simple-node-js-react-npm-app.git'
+			    sh 'trivy fs --exit-code 1 --severity CRITICAL --format json -o trivy-sca-CRITICAL-results.json .'
 			}
 		    }
 		}
@@ -44,8 +43,7 @@ pipeline {
 	stage('Scanning Image') {
 	    steps {
 		script {
-		    sh 'touch imgResult.json'
-		    sh 'docker run --name trivyIMG -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/jenkins/workspace/simple-node-js/imgResult.json:$HOME/result.json aquasec/trivy image --exit-code 1 --severity CRITICAL --format cyclonedx --scanners vuln --output $HOME/result.json derekshaw/simple-node-js:$GIT_COMMIT'
+		    sh 'trivy image --exit-code 1 --severity CRITICAL --format json -o trivy-image-CRITICAL-results.json derekshaw/simple-node-js:$GIT_COMMIT'
 	        }
 	    }
 	}
@@ -71,19 +69,18 @@ pipeline {
     post {
 	always {
 	    sh '''
-		docker stop trivySCA
-		docker rm trivySCA
-		docker stop trivyIMG
-		docker rm trivyIMG
 		docker stop mynodeapp
 		docker rm mynodeapp
 		docker stop zap
 		docker rm zap
 	    '''
 	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
-	    archiveArtifacts artifacts: 'result.json', onlyIfSuccessful: true
-	    archiveArtifacts artifacts: 'imgResult.json', onlyIfSuccessful: true
-	    archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: true
+	    junit allowEmptyResults: true, stdioRetention: '', testResults: 'test-results.xml'
+            sh 'trivy convert --format template --template /usr/local/share/trivy/templates/html.tpl --output trivy-image-CRITICAL-results.html trivy-image-CRITICAL-results.json'
+            sh 'trivy convert --format template --template /usr/local/share/trivy/templates/html.tpl --output trivy-sca-CRITICAL-results.html trivy-sca-CRITICAL-results.json'
+	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-CRITICAL-results.html", reportName: "Trivy Image Critical Vul Report", reportTitles: "", useWrapperFileDirectly: true])
+	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-sca-CRITICAL-results.html", reportName: "Trivy SCA Critical Vul Report", reportTitles: "", useWrapperFileDirectly: true])
+	    archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: false
 	}
     }
 }
