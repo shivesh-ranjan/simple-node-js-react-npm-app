@@ -56,7 +56,7 @@ pipeline {
 		    sh 'docker pull zaproxy/zap-stable'
 		    sh 'echo $(pwd)'
 		    sh 'touch zap-scan-report.html'
-		    sh 'docker run --name zap -v $(pwd):/zap/wrk:rw -v /var/lib/jenkins/workspace/simple-node-js/zap-scan-report.html:/zap/wrk/zap-scan-report.html --network="host" zaproxy/zap-stable zap-full-scan.py -t http://localhost:3000 -r zap-scan-report.html'
+		    sh 'docker run -u zap --name zap -v $(pwd):/zap/wrk:rw -v /var/lib/jenkins/workspace/simple-node-js/zap-scan-report.html:/zap/wrk/zap-scan-report.html --network="host" zaproxy/zap-stable zap-full-scan.py -t http://localhost:3000 -r zap-scan-report.html'
 		}
 	    }
 	}
