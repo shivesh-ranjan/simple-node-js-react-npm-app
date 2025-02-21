@@ -16,16 +16,16 @@ pipeline {
                 	sh './jenkins/scripts/test.sh' 
             	    }
         	}
-	        stage('SAST') {
-	            steps {
-			script {
-		    	    def scannerHome = tool 'sonarqube'
-		    	    withSonarQubeEnv() {
-				sh "${scannerHome}/bin/sonar-scanner"
-		    	    }
-			}
-	    	    }
-		}
+		//       stage('SAST') {
+		//           steps {
+		//	script {
+		//    	    def scannerHome = tool 'sonarqube'
+		//    	    withSonarQubeEnv() {
+		//		sh "${scannerHome}/bin/sonar-scanner"
+		//    	    }
+		//	}
+		//   	    }
+		//}
 		stage('SCA and Secrets Scan') {
 		    steps {
 			script {
@@ -40,7 +40,7 @@ pipeline {
 	}
 	stage('Building Image') {
 	    steps {
-		sh 'docker build -t derekshaw/simple-node-js:1.0 .'
+		sh 'docker build -t derekshaw/simple-node-js:$GIT_COMMIT .'
 	    }
 	}
 	stage('Scanning Image') {
@@ -53,11 +53,37 @@ pipeline {
 	        }
 	    }
 	}
+	stage('DAST') {
+	    steps {
+		script {
+		    sh 'docker run --name mynodeapp -d -p 3000:3000 derekshaw/simple-node-js:$GIT_COMMIT'
+		    sh 'docker pull owasp/zap2docker-stable'
+		    sh 'docker run -v $(pwd):/zap/wrk/:rw --network="host" zaproxy/zap-stable zap-full-scan.py -t http://localhost:3000 -r scan-report.html'
+		}
+	    }
+	}
+	stage('Pushing Image to Registry') {
+	    steps {
+		script {
+		    withDockerRegistry(credentialsId: 'docker-hub-credentials', toolName: 'docker') {
+			sh 'docker push derekshaw/simple-node-js:$GIT_COMMIT'
+		    }
+		}
+	    }
+	}
+	stage('Clean Up') {
+	    steps {
+		script {
+		    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
+		}
+	    }
+	}
     }
     post {
 	always {
 	    archiveArtifacts artifacts: 'result.json', onlyIfSuccessful: true
 	    archiveArtifacts artifacts: 'imgResult.json', onlyIfSuccessful: true
+	    archiveArtifacts artifacts: 'scan-report.html', onlyIfSuccessful: true
 	}
     }
 }
