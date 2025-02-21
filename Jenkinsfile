@@ -87,7 +87,7 @@ pipeline {
 	always {
 	    archiveArtifacts artifacts: 'result.json', onlyIfSuccessful: true
 	    archiveArtifacts artifacts: 'imgResult.json', onlyIfSuccessful: true
-	    archiveArtifacts artifacts: 'zap-scan-report.html', onlyIfSuccessful: true
+	    archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: true
 	}
     }
 }
