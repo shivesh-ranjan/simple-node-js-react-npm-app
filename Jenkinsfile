@@ -29,7 +29,7 @@ pipeline {
 		stage('SCA and Secrets Scan') {
 		    steps {
 			script {
-			    sh 'trivy fs --exit-code 1 --severity HIGH,CRITICAL --format cyclonedx -o trivy-sca-CRITICAL-results.json .'
+			    sh 'trivy fs --exit-code 1 --severity HIGH,CRITICAL --format json -o trivy-sca-CRITICAL-results.json .'
 			}
 		    }
 		}
@@ -43,7 +43,7 @@ pipeline {
 	stage('Scanning Image') {
 	    steps {
 		script {
-		    sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --format cyclonedx -o trivy-image-CRITICAL-results.json derekshaw/simple-node-js:$GIT_COMMIT'
+		    sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --format json -o trivy-image-CRITICAL-results.json derekshaw/simple-node-js:$GIT_COMMIT'
 	        }
 	    }
 	}
