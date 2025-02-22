@@ -53,7 +53,12 @@ pipeline {
 		    sh '''docker run --name mynodeapp -d -p 3000:3000 derekshaw/simple-node-js:$GIT_COMMIT
 		    	  docker pull zaproxy/zap-stable
 		    	  echo 'docker run -u root --name zap -v $(pwd)/zap:/zap/wrk:rw --network="host" zaproxy/zap-stable zap-full-scan.py -t http://localhost:3000 -r zap-scan-report.html' > script.sh
-		    	  echo '$?' >> script.sh
+		    	  echo 'if [ $? == 1 ] || [ $? == 3 ]' >> script.sh
+	 		  echo 'then' >> script.sh
+      			  echo '  exit 1' >> script.sh
+	   		  echo 'else' >> script.sh
+			  echo '  exit 0' >> script.sh
+     			  echo 'fi' >> script.sh
 	 		  sh script.sh
 			'''
 		}
