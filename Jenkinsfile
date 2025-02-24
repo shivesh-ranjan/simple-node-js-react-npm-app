@@ -93,7 +93,6 @@ pipeline {
 	    sh 'rm trivy-image-results.html'
 	    sh 'rm trivy-image-results.json'
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
-	    sh 'rm zap/zap-scan-report.html'
 	    sh '''
 		docker stop mynodeapp
 		docker rm mynodeapp
@@ -104,6 +103,7 @@ pipeline {
 	    '''
 	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
 	    //archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: false
+	    sh 'sudo rm zap/zap-scan-report.html'
 	}
     }
 }
