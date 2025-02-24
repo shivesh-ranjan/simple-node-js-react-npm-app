@@ -51,7 +51,7 @@ pipeline {
 			trivy image --format json -o trivy-image-results.json derekshaw/simple-node-js:$GIT_COMMIT
 			sh scripts/trivy-image.sh
 		    '''
-		    sh 'scripts/count_severity.sh trivy_image_severity_count.json'
+		    //sh 'scripts/count_severity.sh trivy_image_severity_count.json'
 	        }
 	    }
 	}
