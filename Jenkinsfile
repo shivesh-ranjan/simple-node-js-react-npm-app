@@ -86,7 +86,6 @@ pipeline {
 	always {
             sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-sca-results.html trivy-sca-results.json'
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-sca-results.html", reportName: "Trivy SCA Vul Report", reportTitles: "", useWrapperFileDirectly: true])
-	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
             sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-image-results.html trivy-image-results.json'
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-results.html", reportName: "Trivy Image Vul Report", reportTitles: "", useWrapperFileDirectly: true])
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
@@ -98,6 +97,7 @@ pipeline {
 		docker stop zap
 		docker rm zap
 	    '''
+	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
 	    //archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: false
 	}
     }
