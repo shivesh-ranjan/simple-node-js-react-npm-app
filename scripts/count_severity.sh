@@ -10,6 +10,7 @@ if [ ! -f "$json_file" ]; then
 fi
 while IFS= read -r line; do
 	if echo "$line" | jq -e '.severity == "CRITICAL" and .count > 0' > /dev/null || echo "$line" | jq -e '.severity == "HIGH" and .count > 0' > /dev/null; then
+		echo "Found CRITICAL or HIGH severity vulnerability..."
 		exit 1
 	fi
 done < "$json_file"
