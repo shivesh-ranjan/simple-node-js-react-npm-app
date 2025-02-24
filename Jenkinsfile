@@ -31,6 +31,7 @@ pipeline {
 			script {
 			    sh '''
 				trivy fs --format json -o trivy-sca-results.json .
+				sh scripts/trivy-sca.sh
 			    '''
 			    sh 'scripts/count_severity.sh trivy_sca_severity_count.json'
 			}
