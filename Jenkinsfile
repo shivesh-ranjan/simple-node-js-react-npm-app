@@ -76,6 +76,9 @@ pipeline {
     }
     post {
 	always {
+	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-CRITICAL-results.html", reportName: "Trivy Image Critical Vul Report", reportTitles: "", useWrapperFileDirectly: true])
+	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-sca-CRITICAL-results.html", reportName: "Trivy SCA Critical Vul Report", reportTitles: "", useWrapperFileDirectly: true])
+	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
 	    sh '''
 		docker stop mynodeapp
 		docker rm mynodeapp
@@ -85,9 +88,6 @@ pipeline {
 	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
             //sh 'trivy convert --format template --template /usr/local/share/trivy/templates/html.tpl --output trivy-image-CRITICAL-results.html trivy-image-CRITICAL-results.json'
             //sh 'trivy convert --format template --template /usr/local/share/trivy/templates/html.tpl --output trivy-sca-CRITICAL-results.html trivy-sca-CRITICAL-results.json'
-	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-CRITICAL-results.html", reportName: "Trivy Image Critical Vul Report", reportTitles: "", useWrapperFileDirectly: true])
-	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-sca-CRITICAL-results.html", reportName: "Trivy SCA Critical Vul Report", reportTitles: "", useWrapperFileDirectly: true])
-	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
 	    //archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: false
 	}
     }
