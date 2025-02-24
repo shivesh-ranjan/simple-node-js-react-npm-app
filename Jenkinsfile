@@ -29,7 +29,7 @@ pipeline {
 		stage('SCA and Secrets Scan') {
 		    steps {
 			script {
-			    sh 'trivy fs --exit-code 1 --severity CRITICAL --format template --template "@/usr/local/share/trivy/templates/html.tpl" -o trivy-sca-CRITICAL-results.html .'
+			    sh 'trivy fs --exit-code 1 --severity HIGH,CRITICAL --format template --template "@/usr/local/share/trivy/templates/html.tpl" -o trivy-sca-CRITICAL-results.html .'
 			}
 		    }
 		}
