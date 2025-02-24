@@ -86,9 +86,14 @@ pipeline {
 	always {
             sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-sca-results.html trivy-sca-results.json'
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-sca-results.html", reportName: "Trivy SCA Vul Report", reportTitles: "", useWrapperFileDirectly: true])
+	    sh 'rm trivy-sca-results.html'
+	    sh 'rm trivy-sca-results.json'
             sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-image-results.html trivy-image-results.json'
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-results.html", reportName: "Trivy Image Vul Report", reportTitles: "", useWrapperFileDirectly: true])
+	    sh 'rm trivy-image-results.html'
+	    sh 'rm trivy-image-results.json'
 	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
+	    sh 'rm zap/zap-scan-report.html'
 	    sh '''
 		docker stop mynodeapp
 		docker rm mynodeapp
