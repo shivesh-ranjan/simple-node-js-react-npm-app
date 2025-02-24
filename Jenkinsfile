@@ -103,7 +103,6 @@ pipeline {
 	    '''
 	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
 	    //archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: false
-	    sh 'sudo rm zap/zap-scan-report.html'
 	}
     }
 }
