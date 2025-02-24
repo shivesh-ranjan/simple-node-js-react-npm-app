@@ -31,7 +31,6 @@ pipeline {
 			script {
 			    sh '''
 				trivy fs --format json -o trivy-sca-results.json .
-				jq -r '.Results[].Vulnerabilities[].Severity' trivy-sca-results.json | sort | uniq -c | awk '{print "{\"severity\": \""$2"\", \"count\": "$1"}"}' > trivy_sca_severity_count.json
 			    '''
 			    sh 'scripts/count_severity.sh trivy_sca_severity_count.json'
 			}
