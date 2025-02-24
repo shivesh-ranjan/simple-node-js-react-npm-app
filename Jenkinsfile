@@ -33,7 +33,7 @@ pipeline {
 				trivy fs --format json -o trivy-sca-results.json .
 				sh scripts/trivy-sca.sh
 			    '''
-			    sh 'scripts/count_severity.sh trivy_sca_severity_count.json'
+			    //sh 'scripts/count_severity.sh trivy_sca_severity_count.json'
 			}
 		    }
 		}
@@ -49,7 +49,7 @@ pipeline {
 		script {
 		    sh '''
 			trivy image --format json -o trivy-image-results.json derekshaw/simple-node-js:$GIT_COMMIT
-			jq -r '.Results[].Vulnerabilities[].Severity' trivy-image-results.json | sort | uniq -c | awk '{print "{\"severity\": \""$2"\", \"count\": "$1"}"}' > trivy_image_severity_count.json
+			sh scripts/trivy-image.sh
 		    '''
 		    sh 'scripts/count_severity.sh trivy_image_severity_count.json'
 	        }
