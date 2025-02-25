@@ -78,26 +78,26 @@ pipeline {
 		expression { currentBuild.result == 'UNSTABLE' }
 	    }
 	    steps {
-	        input message: 'ZAP test found 1 or more HIGH Risk/s. Do you want to continue?',
-		    parameters: [
-			choice(name: 'Continue?', choices: ['Yes', 'No'], description: 'Do you want to continue?')
-		    ]
+	        input message: 'ZAP test found 1 or more HIGH Risk/s. Do you want to continue?'
+			//   parameters: [
+			//choice(name: 'Continue?', choices: ['Yes', 'No'], description: 'Do you want to continue?')
+			//   ]
 	    }
 	}
-	stage('Continue or Abort') {
-	    when {
-		expression { currentBuild.result == 'UNSTABLE' }
-	    }
-	    steps {
-		script {
-		    def userChoice = params.'Continue?'
-		    if (userChoice == 'No') {
-			error "Pipeline aborted by the user."
-		    }
-		    echo "User chose to continue, proceeding..."
-		}
-	    }
-	}
+	//stage('Continue or Abort') {
+	//    when {
+	//	expression { currentBuild.result == 'UNSTABLE' }
+	//    }
+	//    steps {
+	//	script {
+	//	    def userChoice = params.'Continue?'
+	//	    if (userChoice == 'No') {
+	//		error "Pipeline aborted by the user."
+	//	    }
+	//	    echo "User chose to continue, proceeding..."
+	//	}
+	//    }
+	//}
 	stage('Pushing Image to Registry') {
 	    steps {
 		script {
