@@ -51,6 +51,10 @@ pipeline {
 			trivy image --severity HIGH,CRITICAL --format json -o trivy-image-results.json derekshaw/simple-node-js:$GIT_COMMIT
 		    '''
 		    sh 'scripts/trivy-image.sh'
+            	    sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-image-results.html trivy-image-results.json'
+	    	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-results.html", reportName: "Trivy Image Vul Report", reportTitles: "", useWrapperFileDirectly: true])
+	            sh 'rm trivy-image-results.html'
+	            sh 'rm trivy-image-results.json'
 		    sh 'scripts/count_severity.sh trivy_image_severity_count.json'
 	        }
 	    }
@@ -60,15 +64,8 @@ pipeline {
 		script {
 		    sh '''docker run --name mynodeapp -d -p 3000:3000 derekshaw/simple-node-js:$GIT_COMMIT
 		    	  docker pull zaproxy/zap-stable
-		    	  echo 'docker run -u root --name zap -v $(pwd)/zap:/zap/wrk:rw --network="host" zaproxy/zap-stable zap-full-scan.py -t http://localhost:3000 -r zap-scan-report.html' > script.sh
-		    	  echo 'if [ $? == 1 ] || [ $? == 3 ]' >> script.sh
-	 		  echo 'then' >> script.sh
-      			  echo '  exit 1' >> script.sh
-	   		  echo 'else' >> script.sh
-			  echo '  exit 0' >> script.sh
-     			  echo 'fi' >> script.sh
-	 		  sh script.sh
 			'''
+	 	    sh 'scripts/zap-script.sh'
 		}
 	    }
 	}
@@ -88,20 +85,20 @@ pipeline {
 	    //publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-sca-results.html", reportName: "Trivy SCA Vul Report", reportTitles: "", useWrapperFileDirectly: true])
 	    //sh 'rm trivy-sca-results.html'
 	    //sh 'rm trivy-sca-results.json'
-            sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-image-results.html trivy-image-results.json'
-	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-results.html", reportName: "Trivy Image Vul Report", reportTitles: "", useWrapperFileDirectly: true])
-	    sh 'rm trivy-image-results.html'
-	    sh 'rm trivy-image-results.json'
-	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
-	    sh '''
-		docker stop mynodeapp
-		docker rm mynodeapp
-	    '''
+	    //       sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-image-results.html trivy-image-results.json'
+	    //publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-results.html", reportName: "Trivy Image Vul Report", reportTitles: "", useWrapperFileDirectly: true])
+	    //sh 'rm trivy-image-results.html'
+	    //sh 'rm trivy-image-results.json'
+	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
+		//   sh '''
+		//docker stop mynodeapp
+		//docker rm mynodeapp
+		//   '''
 	    sh '''
 		docker stop zap
 		docker rm zap
 	    '''
-	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
+	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
 	    //archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: false
 	}
     }
