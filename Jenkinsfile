@@ -55,7 +55,7 @@ pipeline {
 	    	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./", reportFiles: "trivy-image-results.html", reportName: "Trivy Image Vul Report", reportTitles: "", useWrapperFileDirectly: true])
 	            sh 'rm trivy-image-results.html'
 	            sh 'rm trivy-image-results.json'
-		    sh 'scripts/count_severity.sh trivy_image_severity_count.json'
+		    //sh 'scripts/count_severity.sh trivy_image_severity_count.json'
 	        }
 	    }
 	}
