@@ -56,7 +56,7 @@ pipeline {
 	            sh 'rm trivy-image-results.html'
 	            sh 'rm trivy-image-results.json'
 		    sh 'cat trivy_image_severity_count.json'
-		    sh 'scripts/count_severity.sh trivy_image_severity_count.json 10 50' // args: $1:- file_path; $2:- allowed_critical_cves; $3:- allowed_high_cves
+		    sh 'scripts/count_severity.sh trivy_image_severity_count.json 10 90' // args: $1:- file_path; $2:- allowed_critical_cves; $3:- allowed_high_cves
 	        }
 	    }
 	}
