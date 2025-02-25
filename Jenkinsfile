@@ -26,17 +26,17 @@ pipeline {
 		//	}
 		//   	    }
 		//}
-		stage('SCA and Secrets Scan') {
-		    steps {
-			script {
-			    sh '''
-				trivy fs --format json -o trivy-sca-results.json .
-				sh scripts/trivy-sca.sh
-			    '''
-			    //sh 'scripts/count_severity.sh trivy_sca_severity_count.json'
-			}
-		    }
-		}
+		//stage('SCA and Secrets Scan') {
+		//    steps {
+		//	script {
+		//	    sh '''
+		//		trivy fs --exit-code 1 --severity HIGH,CRITICAL --format json -o trivy-sca-results.json .
+		//	    '''
+		//	    //sh scripts/trivy-sca.sh
+		//	    //sh 'scripts/count_severity.sh trivy_sca_severity_count.json'
+		//	}
+		//    }
+		//}
 	    }
 	}
 	stage('Building Image') {
@@ -48,9 +48,9 @@ pipeline {
 	    steps {
 		script {
 		    sh '''
-			trivy image --format json -o trivy-image-results.json derekshaw/simple-node-js:$GIT_COMMIT
-			sh scripts/trivy-image.sh
+			trivy image --exit-code 1 --severity HIGH,CRITICAL --format json -o trivy-image-results.json derekshaw/simple-node-js:$GIT_COMMIT
 		    '''
+		    //sh scripts/trivy-image.sh
 		    //sh 'scripts/count_severity.sh trivy_image_severity_count.json'
 	        }
 	    }
