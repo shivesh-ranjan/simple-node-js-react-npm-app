@@ -66,7 +66,35 @@ pipeline {
 		    sh '''docker run --name mynodeapp -d -p 3000:3000 derekshaw/simple-node-js:$GIT_COMMIT
 		    	  docker pull zaproxy/zap-stable
 			'''
-	 	    sh 'scripts/zap-script.sh'
+	 	    def result = sh(script: 'scripts/zap-script.sh', returnStatus: true)
+		    if(result != 0) {
+			currentBuild.result = 'UNSTABLE'
+		    }
+		}
+	    }
+	}
+	stage('User Input'){
+	    when {
+		expression { currentBuild.result == 'UNSTABLE' }
+	    }
+	    steps {
+	        input message: 'ZAP test found 1 or more HIGH Risk/s. Do you want to continue?',
+		    parameters: [
+			choice(name: 'Continue?', choices: ['Yes', 'No'], description: 'Do you want to continue?')
+		    ]
+	    }
+	}
+	stage('Continue or Abort') {
+	    when {
+		expression { currentBuild.result == 'UNSTABLE' }
+	    }
+	    steps {
+		script {
+		    def userChoice = params.'Continue?'
+		    if (userChoice == 'No') {
+			error "Pipeline aborted by the user."
+		    }
+		    echo "User chose to continue, proceeding..."
 		}
 	    }
 	}
