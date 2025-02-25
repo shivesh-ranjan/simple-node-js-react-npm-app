@@ -48,10 +48,10 @@ pipeline {
 	    steps {
 		script {
 		    sh '''
-			trivy image --exit-code 1 --severity HIGH,CRITICAL --format json -o trivy-image-results.json derekshaw/simple-node-js:$GIT_COMMIT
+			trivy image --severity HIGH,CRITICAL --format json -o trivy-image-results.json derekshaw/simple-node-js:$GIT_COMMIT
 		    '''
-		    //sh scripts/trivy-image.sh
-		    //sh 'scripts/count_severity.sh trivy_image_severity_count.json'
+		    sh 'scripts/trivy-image.sh'
+		    sh 'scripts/count_severity.sh trivy_image_severity_count.json'
 	        }
 	    }
 	}
