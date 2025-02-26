@@ -67,6 +67,7 @@ pipeline {
 		    	  docker pull zaproxy/zap-stable
 			'''
 	 	    def result = sh(script: 'scripts/zap-script.sh', returnStatus: true)
+	    	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
 		    if(result != 0) {
 			currentBuild.result = 'UNSTABLE'
 		    }
@@ -127,7 +128,6 @@ pipeline {
 		docker stop zap
 		docker rm zap
 	    '''
-	    publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "./zap", reportFiles: "zap-scan-report.html", reportName: "ZAP DAST Scan Report", reportTitles: "", useWrapperFileDirectly: true])
 	    //archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: false
 	}
     }
