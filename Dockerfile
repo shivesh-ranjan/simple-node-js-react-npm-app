@@ -5,7 +5,7 @@ WORKDIR /app
 COPY ./public /app/public
 COPY ./src /app/src
 COPY package.json .
-RUN npm install
+RUN npm install --ignore-scripts
 EXPOSE 3000
 RUN npm run build
 CMD ["npm", "start"]
