@@ -1,4 +1,6 @@
 FROM node:23.9.0-alpine3.21
+RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
+USER nonroot
 WORKDIR /app
 COPY ./public /app/public
 COPY ./src /app/src
