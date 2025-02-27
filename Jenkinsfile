@@ -23,13 +23,10 @@ pipeline {
 		            withSonarQubeEnv() {
 			        sh "${scannerHome}/bin/sonar-scanner"
 		       	    }
-			    def qg = waitForQualityGate()
-			    if (qg.status != 'OK') {
-	        		input message: 'Quality Gate of SonarQube returned not OK. Do you want to continue?'
-			    }
 			}
 		    }
 	   	}
+
 		//stage('SCA and Secrets Scan') {
 		//    steps {
 		//	script {
@@ -41,6 +38,12 @@ pipeline {
 		//	}
 		//    }
 		//}
+	    }
+	}
+	stage('Quality Gate') {
+	    def qg = waitForQualityGate()
+	    if (qg.status != 'OK') {
+       		input message: 'Quality Gate of SonarQube returned not OK. Do you want to continue?'
 	    }
 	}
 	stage('Building Image') {
