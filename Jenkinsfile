@@ -41,9 +41,11 @@ pipeline {
 	    }
 	}
 	stage('Quality Gate') {
-	    def qg = waitForQualityGate()
-	    if (qg.status != 'OK') {
-       		input message: 'Quality Gate of SonarQube returned not OK. Do you want to continue?'
+	    script {
+	        def qg = waitForQualityGate()
+	        if (qg.status != 'OK') {
+       		    input message: 'Quality Gate of SonarQube returned not OK. Do you want to continue?'
+	        }
 	    }
 	}
 	stage('Building Image') {
