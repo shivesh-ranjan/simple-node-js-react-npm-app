@@ -44,8 +44,19 @@ pipeline {
 		script {
 	            def qg = waitForQualityGate()
 	            if (qg.status != 'OK') {
-       		        input message: 'Quality Gate of SonarQube returned not OK. Do you want to continue?'
+       		        input message: 'Quality Gate of SonarQube returned not OK. Do you still want to continue?'
 	            }
+		}
+	    }
+	}
+	stage('CIS Docker Compliance') {
+	    steps {
+		script {
+		    def result = sh(script: 'scripts/cis-docker.sh', returnStatus: true)
+		    sh 'cat conftestResult.txt'
+		    if(result!=0) {
+			input message: 'Dockerfile is not following the Best practices as listed in the CIS benchmark for Docker. Do you still want to continue?'
+		    }
 		}
 	    }
 	}
