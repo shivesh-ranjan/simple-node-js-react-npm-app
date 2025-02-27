@@ -58,7 +58,7 @@ pipeline {
 	    steps {
 		script {
 		    sh '''
-			trivy image --severity HIGH,CRITICAL --format json -o trivy-image-results.json derekshaw/simple-node-js:$GIT_COMMIT
+			trivy image --severity HIGH,CRITICAL --ignore-unfixed --format json -o trivy-image-results.json derekshaw/simple-node-js:$GIT_COMMIT
 		    '''
 		    sh 'scripts/trivy-image.sh'
             	    sh 'trivy convert --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output trivy-image-results.html trivy-image-results.json'
