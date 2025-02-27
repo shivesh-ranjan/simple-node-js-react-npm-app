@@ -41,7 +41,7 @@ pipeline {
 	    }
 	}
 	stage('Quality Gate') {
-	    script {
+	    steps {
 	        def qg = waitForQualityGate()
 	        if (qg.status != 'OK') {
        		    input message: 'Quality Gate of SonarQube returned not OK. Do you want to continue?'
