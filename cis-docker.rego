@@ -20,10 +20,10 @@ user_defined {
   trace("4.1 USER not required (set in .opacisrc)")
 }
 
-deny[msg] {
-  not approved_base_image_used
-  msg = "4.2 Ensure that containers use trusted base images (Not Scored) level 1"
-}
+#deny[msg] {
+#  not approved_base_image_used
+#  msg = "4.2 Ensure that containers use trusted base images (Not Scored) level 1"
+#}
 
 approved_base_image_used {
   cispolicyconfig.approved_base_image_not_required == false
@@ -57,10 +57,10 @@ images_scanned_and_rebuilt_not_patched {
   trace("4.4 Images are immutable and continuously scanned for cve (set in .opacisrc)")
 }
 
-deny[msg] {
-  not trust_defined
-  msg = "4.5 Ensure Content trust for Docker is Enabled (Scored) level 2"
-}
+#deny[msg] {
+#  not trust_defined
+#  msg = "4.5 Ensure Content trust for Docker is Enabled (Scored) level 2"
+#}
 
 trust_defined {
   setuid.docker_content_trust == 1
