@@ -124,14 +124,15 @@ pipeline {
 	    //sh 'rm trivy-image-results.html'
 	    //sh 'rm trivy-image-results.json'
 	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
+	    sh 'rm zap/zap-scan-report.html'
 		//   sh '''
 		//docker stop mynodeapp
 		//docker rm mynodeapp
 		//   '''
-	    sh '''
-		docker stop zap
-		docker rm zap
-	    '''
+		//   sh '''
+		//docker stop zap
+		//docker rm zap
+		//   '''
 	    //archiveArtifacts artifacts: 'zap/zap-scan-report.html', onlyIfSuccessful: false
 	}
     }
