@@ -95,6 +95,19 @@ pipeline {
 		}
 	    }
 	}
+	post {
+	    always {
+		sh '''
+		    docker stop mynodeapp
+		    docker rm mynodeapp
+		'''
+		sh '''
+		    docker exec zap rm /zap/wrk/zap-scan-report.html
+		    docker stop zap
+		    docker rm zap
+		'''
+	    }
+	}
 	stage('User Input'){
 	    when {
 		expression { currentBuild.result == 'UNSTABLE' }
@@ -124,11 +137,6 @@ pipeline {
 	    //sh 'rm trivy-image-results.html'
 	    //sh 'rm trivy-image-results.json'
 	    sh 'docker rmi derekshaw/simple-node-js:$GIT_COMMIT'
-	    sh 'docker run zap rm /zap/wrk/zap-scan-report.html'
-	    sh '''
-		docker stop zap
-		docker rm zap
-	    '''
 		//   sh '''
 		//docker stop mynodeapp
 		//docker rm mynodeapp
