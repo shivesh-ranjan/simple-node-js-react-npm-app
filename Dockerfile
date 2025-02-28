@@ -8,5 +8,5 @@ COPY package.json .
 RUN npm install --ignore-scripts
 EXPOSE 3000
 RUN npm run build
-HEALTHCHECK CMD curl --fail http://localhost:3000/ || exit 1
+HEALTHCHECK CMD ["curl", "--fail", "http://localhost:3000/", "||", "exit", "1"]
 CMD ["npm", "start"]
